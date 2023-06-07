@@ -1,0 +1,10 @@
+{
+  "id": "micro-templates",
+  "name": "Micro templates",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Flexible embedded micro templates powered by javascript functions",
+  "author": "Konstantin Epishev",
+  "authorUrl": "https://epishev.me",
+  "isDesktopOnly": true
+}
