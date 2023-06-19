@@ -4,10 +4,8 @@ import {
   PluginSettingTab,
   Setting,
   FuzzySuggestModal,
+  TFile,
 } from "obsidian";
-import { join } from "path";
-import { sync } from "fast-glob";
-import { readFile } from "fs/promises";
 import { EOL } from "os";
 import ejs from "ejs";
 import dayjs from "dayjs";
@@ -25,11 +23,6 @@ type SourceDir = {
   name: string;
 };
 
-type Template = {
-  path: string;
-  name: string;
-};
-
 export class VaultDirectoriesSuggestModal extends FuzzySuggestModal<SourceDir> {
   rootPath: string;
   onSelect: (dir: string) => void;
@@ -43,14 +36,20 @@ export class VaultDirectoriesSuggestModal extends FuzzySuggestModal<SourceDir> {
   }
 
   getItems(): SourceDir[] {
-    const items = sync(join(this.rootPath, "**/*"), {
-      onlyDirectories: true,
-    }).map((dirPath) => ({
-      path: dirPath,
-      name: `<root>${dirPath.replace(this.rootPath, "")}`,
-    }));
+    const files = this.app.vault
+      .getFiles()
+      .map(({ parent }) => parent)
+      .filter(Boolean)
+      .reduce<Map<string, SourceDir>>((acc, dir) => {
+        const name = ["<root>", dir?.name || ""].join("/");
 
-    return items;
+        return acc.set(dir?.path || "", {
+          path: dir?.path || "",
+          name,
+        })
+      }, new Map())
+
+    return Array.from(files.values());
   }
 
   getItemText(item: SourceDir): string {
@@ -62,7 +61,7 @@ export class VaultDirectoriesSuggestModal extends FuzzySuggestModal<SourceDir> {
   }
 }
 
-export class TemplatesSuggestModal extends FuzzySuggestModal<Template> {
+export class TemplatesSuggestModal extends FuzzySuggestModal<TFile> {
   templatesDir: string;
   onSelect: (content: string) => void;
 
@@ -77,21 +76,18 @@ export class TemplatesSuggestModal extends FuzzySuggestModal<Template> {
     this.onSelect = onSelect;
   }
 
-  getItems(): Template[] {
-    const items = sync(join(this.templatesDir, "**/*")).map((templatePath) => ({
-      path: templatePath,
-      name: `<root>${templatePath.replace(this.templatesDir, "")}`,
-    }));
-
-    return items;
+  getItems(): TFile[] {
+    return this.app.vault
+      .getFiles()
+      .filter(({ parent }) => parent?.path === this.templatesDir)
   }
 
-  getItemText(item: Template): string {
-    return item.name;
+  getItemText(file: TFile): string {
+    return file.name;
   }
 
-  async onChooseItem(item: Template) {
-    const templateContent = await readFile(item.path, "utf-8");
+  async onChooseItem(item: TFile) {
+    const templateContent = await this.app.vault.read(item);
 
     this.onSelect(
       ejs.render(templateContent, {
@@ -103,7 +99,6 @@ export class TemplatesSuggestModal extends FuzzySuggestModal<Template> {
 
 export default class MicroTemplates extends Plugin {
   settings: MicroTemplatesSettings;
-  templatesSoureDir = "";
 
   async onload() {
     await this.loadSettings();
@@ -141,11 +136,11 @@ export default class MicroTemplates extends Plugin {
 
             if (cursorLineIdx === -1) return;
 
-            const cursorСh = contentLines[cursorLineIdx].indexOf("$cur");
+            const cursorCh = contentLines[cursorLineIdx].indexOf("$cur");
 
             editor.setCursor(
               currentCursorPosition.line + cursorLineIdx,
-              cursorСh
+              cursorCh
             );
 
             const newCursorPosition = editor.getCursor();

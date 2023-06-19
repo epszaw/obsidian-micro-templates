@@ -1,6 +1,6 @@
 {
   "name": "micro-templates",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Flexible embedded micro templates powered by javascript functions",
   "main": "main.js",
   "scripts": {
@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "dayjs": "^1.11.8",
-    "ejs": "^3.1.9",
-    "fast-glob": "^3.2.12"
+    "ejs": "^3.1.9"
   }
 }
