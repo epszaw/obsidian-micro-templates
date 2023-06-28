@@ -6,7 +6,6 @@ import {
   FuzzySuggestModal,
   TFile,
 } from "obsidian";
-import { EOL } from "os";
 import ejs from "ejs";
 import dayjs from "dayjs";
 
@@ -24,15 +23,12 @@ type SourceDir = {
 };
 
 export class VaultDirectoriesSuggestModal extends FuzzySuggestModal<SourceDir> {
-  rootPath: string;
   onSelect: (dir: string) => void;
 
   constructor(app: App, onSelect: (dir: string) => void) {
     super(app);
 
     this.onSelect = onSelect;
-    // @ts-ignore
-    this.rootPath = this.app.vault.adapter.basePath as string;
   }
 
   getItems(): SourceDir[] {
@@ -127,7 +123,7 @@ export default class MicroTemplates extends Plugin {
           this.settings.templatesDir,
           (content) => {
             const currentCursorPosition = editor.getCursor();
-            const contentLines = content.split(EOL);
+            const contentLines = content.split("\n");
             const cursorLineIdx = contentLines.findIndex((line) =>
               line.includes("$cur")
             );
@@ -182,7 +178,6 @@ class MicroTemplatesSettingTab extends PluginSettingTab {
     const { containerEl } = this;
 
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Micro templates" });
 
     new Setting(containerEl)
       .setName("Path to templates source directory")

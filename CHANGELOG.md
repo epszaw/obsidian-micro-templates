@@ -1,3 +1,9 @@
+# 1.0.2
+
+Fixes:
+
+- Fix issue with line wraps on mobile devices.
+
 # 1.0.1
 
 Fixes:
