@@ -100,7 +100,7 @@ export default class MicroTemplates extends Plugin {
     await this.loadSettings();
 
     this.addCommand({
-      id: "micro-templates.select-templates-source-dir",
+      id: "select-templates-source-dir",
       name: "select source folder",
       callback: async () => {
         const dirModal = new VaultDirectoriesSuggestModal(
@@ -115,7 +115,7 @@ export default class MicroTemplates extends Plugin {
       },
     });
     this.addCommand({
-      id: "micro-templates.insert",
+      id: "insert",
       name: "insert",
       editorCallback: async (editor) => {
         const templateModal = new TemplatesSuggestModal(

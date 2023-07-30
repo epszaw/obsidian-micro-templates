@@ -1,3 +1,9 @@
+# 1.0.3
+
+Fixes:
+
+- Remove manual prefixes from the extension's commands
+
 # 1.0.2
 
 Fixes:

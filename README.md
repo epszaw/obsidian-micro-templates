@@ -14,9 +14,9 @@ The plugin allows to use templates stored inside your vault as text snippets.
 
 ## Features
 
-The plugin uses [ejs]() template engine to compile templates. It means that you can use any javascript code inside your templates.
+The plugin uses [ejs](https://ejs.co/) template engine to compile templates. It means that you can use any javascript code inside your templates.
 
-Additionaly it provides [dayjs]() to use it as is right in the templates:
+Additionaly it provides [dayjs](https://day.js.org/) to use it as is right in the templates:
 
 ```md
 <%= d().format("YYYY-MM-DD") %>

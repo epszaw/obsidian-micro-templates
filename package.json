@@ -1,6 +1,6 @@
 {
   "name": "micro-templates",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Flexible embedded micro templates powered by javascript functions",
   "main": "main.js",
   "scripts": {
